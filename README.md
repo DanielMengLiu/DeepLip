@@ -1,6 +1,6 @@
 # DeepLip
 deep-learning based audio-visual lip bometrics
-![avlip](https://user-images.githubusercontent.com/45690014/115110548-95209b00-9fae-11eb-9fec-1c47e85afb5d.png)
+![avlip](https://user-images.githubusercontent.com/45690014/115110548-95209b00-9fae-11eb-9fec-1c47e85afb5d.png =200*150)
 
 
 
