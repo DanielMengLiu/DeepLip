@@ -1,6 +1,7 @@
 # DeepLip
 deep-learning based audio-visual lip bometrics
-[Uploading AVlipbiometrics.pdf…]()
+[AVlipbiometrics.pdf](https://github.com/DanielMengLiu/DeepLip/files/6329085/AVlipbiometrics.pdf)
+
 
 # Author
  Meng Liu, Chang Zeng, Hanyi Zhang
