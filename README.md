@@ -1,6 +1,7 @@
 # DeepLip
 deep-learning based audio-visual lip bometrics
-[AVlipbiometrics.pdf](https://github.com/DanielMengLiu/DeepLip/files/6329085/AVlipbiometrics.pdf)
+![avlip](https://user-images.githubusercontent.com/45690014/115110548-95209b00-9fae-11eb-9fec-1c47e85afb5d.png)
+
 
 
 # Author
