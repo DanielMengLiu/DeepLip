@@ -1,0 +1,151 @@
+data:
+  frames: [200,400]
+  train_manifest:  /data/liumeng/ASV-SOTA/data/manifest/tcd_vox1_vox2_fast_manifest.csv # path to training set manifest
+  finetune_manifest: /data/liumeng/ASV-SOTA/data/manifest/tcdtimit_fast_manifest.csv # path to finetuning using pretrained models
+  test_manifest:  /data/liumeng/ASV-SOTA/task.txt # path to test set manifest
+  test_root: /data/datasets/voxceleb1/vox1_test_wav
+  test_manifest_lomgrid: /data/liumeng/ASV-SOTA/data/trial/A_lomgrid_trial_2w # path to test set manifest
+  test_manifest_grid: /data/liumeng/ASV-SOTA/data/trial/A_grid_trial_2w # path to test set manifest
+  data_format: python # kaldi or python
+  kaldi_data_config:
+    trainset: # data comes from final augmented data by kaldi script
+      # for NN training
+      nn_spk2utt: /groups1/gcc50479/spk/code/kaldi_xv/data/train_combined_no_sil/spk2utt
+      nn_uttlist: /groups1/gcc50479/spk/code/kaldi_xv/exp/xvector_nnet_1a/egs/temp/utt2int.train
+      nn_feat_scp: /groups1/gcc50479/spk/code/kaldi_xv/data/train_combined_no_sil/feats.scp
+      nn_utt2num_frames: /groups1/gcc50479/spk/code/kaldi_xv/data/train_combined_no_sil/utt2num_frames
+      # nn_utt2num_frames: /groups1/gcc50479/spk/code/kaldi_xv/exp/xvector_nnet_1a/egs/temp/utt2num_frames.train
+      # for PLDA training
+      plda_spk2utt: /groups1/gcc50479/spk/code/kaldi_xv/data/train/spk2utt
+      plda_feat_scp: /groups1/gcc50479/spk/code/kaldi_xv/data/train/feats.scp
+      plda_input: "ark:apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 scp:/groups1/gcc50479/spk/code/kaldi_xv/data/train/feats.scp ark:- | select-voiced-frames ark:- scp,s,cs:/groups1/gcc50479/spk/code/kaldi_xv/data/train/vad.scp ark:- |"
+      # validset:
+      valid_uttlist: /groups1/gcc50479/spk/code/kaldi_xv/exp/xvector_nnet_1a/egs/temp/valid_uttlist
+    testset:
+      nn_input: "ark:apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 scp:/groups1/gcc50479/spk/code/kaldi_xv/data/voxceleb1_test/feats.scp ark:- | select-voiced-frames ark:- scp,s,cs:/groups1/gcc50479/spk/code/kaldi_xv/data/voxceleb1_test/vad.scp ark:- |"
+  python_data_config:
+    rate: 16000
+    feat_type: mfcc
+    fbank: # fbank config
+      n_fft: 512
+      num_bin: 24
+      energy: false
+      normalize: true
+      delta: false
+      win_len: 0.025
+      win_shift: 0.01
+    logfbank: # logfbank config
+      n_fft: 512
+      num_bin: 60
+      energy: false
+      normalize: true
+      delta: false
+      win_len: 0.025
+      win_shift: 0.01
+    stft: # stft config
+      n_fft: 512
+      normalize: true
+      delta: false
+      win_len: 0.025
+      win_shift: 0.01
+    mfcc: # mfcc config
+      n_fft: 512
+      num_bin: 26
+      energy: true
+      normalize: true
+      delta: false
+      num_cep: 24
+      win_len: 0.025
+      win_shift: 0.01
+
+# arch
+model:
+  arch: etdnn
+  tdnn:
+    input_dim: 24
+    hidden_dim: [512,512,512,512,1500]
+    context: [[-2,-1,0,1,2],[-2,0,2],[-3,0,3],[0],[0]]
+    tdnn_layers: 5
+    fc_layers: 3
+    embedding_dim: 512
+    pooling: statistic # (average, statistic, mono_head_attention, multi_head_attention, attentive_statistic,)
+    attention_hidden_size: 64
+    bn_first: true
+  etdnn:
+    input_dim: 24
+    hidden_dim: [512,512,512,512,512,512,512,512,512,1500]
+    context: [[-2,-1,0,1,2],[0],[-2,0,2],[0],[-3,0,3],[0],[-4,0,4],[0],[0],[0]]
+    tdnn_layers: 10
+    fc_layers: 3
+    embedding_dim: 512
+    pooling: statistic #
+    attention_hidden_size: 64
+    bn_first: true
+  ftdnn:
+    input_dim: 24
+    hidden_dim: [512,512,512,512,1500]
+    context: [[-2,-1,0,1,2],[-2,0,2],[-3,0,3],[0],[0]]
+    tdnn_layers: 5
+    fc_layers: 3
+    embedding_dim: 512
+    pooling: statistic #
+    bn_first: true
+  resnet:
+    input_dim: 1
+    hidden_dim: [64,128,256]
+    # hidden_dim: [128,256,512]
+    residual_block_layers: [3,3,3]
+    # residual_block_layers: [1,1,1]
+    fc_layers: 1
+    # embedding_dim: 512
+    embedding_dim: 256
+    pooling: average
+  rawnet:
+    input_dim: 24
+    hidden_dim: [512,512,512,512,1500]
+    context: [[-2,-1,0,1,2],[-2,0,2],[-3,0,3],[0],[0]]
+    tdnn_layers: 5
+    fc_layers: 3
+    embedding_dim: 256
+    pooling: statistic #
+  sincnet:
+    input_dim: 24
+    hidden_dim: [512,512,512,512,1500]
+    context: [[-2,-1,0,1,2],[-2,0,2],[-3,0,3],[0],[0]]
+    tdnn_layers: 5
+    fc_layers: 3
+    embedding_dim: 512
+    pooling: statistic #
+
+# resume, init_lr, loss
+train:
+  device: gpu # gpu, cpu, multigpu
+  gpus_id: [0,1,2,3] 
+  type: sgd
+  bs: 256
+  lr_decay: 0.1
+  lr_decay_step: [15,25]
+  epoch: 30
+  collate: length_varied
+  loss: LMCL # CrossEntropy, A-Softmax, LMCL(AM-Softmax), AAM-Softmax, Contrastive, Triplet
+  scale: 30
+  margin: [0.2,0.2]
+  sgd:
+    init_lr: 0.01
+    weight_decay: 0.00001
+    momentum: 0.9
+  adam:
+    init_lr: 0.01
+    weight_decay: 0.00001
+  # resume: None
+  # resume: exp/Dec__3_00:31:27_2020/net_6.pth
+  resume: exp/vox1+2_eer2.28/net_avg.pth
+  # resume: exp/Dec__2_14:55:08_2020/net_29.pth
+  train_type: None #finetune #
+
+test:
+  train_plda: False
+  eval_lomgrid: False
+  eval_grid: True
+  use_cos: True
+  use_plda: False

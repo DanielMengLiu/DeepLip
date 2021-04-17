@@ -1,0 +1,128 @@
+data:
+  train_manifest:  data/data_audio/manifest_tcdtimit_fast.csv # path to training set manifest
+  test_trial_lomgrid: data/data_audio/trial_lomgrid_2w.txt # path to test set manifest
+  test_trial_grid:  data/data_audio/trial_grid_2w.txt # path to test set manifest
+  audio_config:  
+    frames: [200,400]
+    feature_config:
+      rate: 16000
+      feat_type: mfcc
+      fbank: # fbank config
+        n_fft: 512
+        num_bin: 24
+        energy: False
+        normalize: True
+        delta: False
+        win_len: 0.025
+        win_shift: 0.01
+      logfbank: # logfbank config
+        n_fft: 512
+        num_bin: 60
+        energy: False
+        normalize: True
+        delta: False
+        win_len: 0.025
+        win_shift: 0.01
+      stft: # stft config
+        n_fft: 512
+        normalize: True
+        delta: False
+        win_len: 0.025
+        win_shift: 0.01
+      mfcc: # mfcc config
+        n_fft: 512
+        num_bin: 26
+        energy: True
+        normalize: True
+        delta: False
+        num_cep: 24
+        win_len: 0.025
+        win_shift: 0.01
+  video_config:
+    dataset: tcdtimit
+    num_classes: 62
+    data_dir: /data/liumeng/Lipreading_using_Temporal_Convolutional_Networks/datasets_TCDTIMIT_1/
+    label_path: /data/liumeng/Lipreading_using_Temporal_Convolutional_Networks/labels/57SpeakerLabel.txt
+
+# arch
+model:
+  audio_config:
+    arch: etdnn
+    tdnn:
+      input_dim: 24
+      hidden_dim: [512,512,512,512,1500]
+      context: [[-2,-1,0,1,2],[-2,0,2],[-3,0,3],[0],[0]]
+      tdnn_layers: 5
+      fc_layers: 3
+      embedding_dim: 512
+      pooling: statistic # (average, statistic, mono_head_attention, multi_head_attention, attentive_statistic,)
+      attention_hidden_size: 64
+      bn_first: True
+    etdnn:
+      input_dim: 24
+      hidden_dim: [512,512,512,512,512,512,512,512,512,1500]
+      context: [[-2,-1,0,1,2],[0],[-2,0,2],[0],[-3,0,3],[0],[-4,0,4],[0],[0],[0]]
+      tdnn_layers: 10
+      fc_layers: 3
+      embedding_dim: 512
+      pooling: statistic #
+      attention_hidden_size: 64
+      bn_first: True
+  video_config:
+    arch: tcn
+    tcn:
+      extract_feats: True
+      backbone_type: resnet
+      relu_type: prelu
+      tcn_dropout: 0.2
+      tcn_dwpw: False
+      tcn_kernel_size: [3, 5, 7]
+      tcn_num_layers: 4
+      tcn_width_mult: 1
+      width_mult: 1.0   
+
+# resume, init_lr, loss
+train:
+  device: gpu # gpu, cpu
+  gpus_id: [0,1,2,3]
+  finetune: False
+  resume: exp/ave_lbp/net_avg.pth
+  epoch: 15
+  bs: 60
+  loss: CrossEntropy
+  lr_decay: 0.1
+  lr_decay_step: [4, 8]
+  optimizer: sgd
+  sgd:
+    init_lr: 0.5
+    weight_decay: 0.00001
+    momentum: 0.9
+  audio_config:
+    optimizer: sgd
+    lr_decay: 0.1
+    lr_decay_step: [15,25]
+    collate: length_varied
+    loss: LMCL # CrossEntropy, A-Softmax, LMCL(AM-Softmax), AAM-Softmax, Contrastive, Triplet
+    scale: 30
+    margin: [0.2,0.2]
+    sgd:
+      init_lr: 0.01
+      weight_decay: 0.00001
+      momentum: 0.9
+    adam:
+      init_lr: 0.01
+      weight_decay: 0.00001
+    # resume: None
+    resume: exp/pretrained_models/audio_model.pth
+  video_config:
+    init_lr: 0.05
+    resume: exp/pretrained_models/video_model.pth
+    extract_feats: False
+
+
+test:
+  train_plda: False
+  eval_lomgrid: True
+  eval_grid: True
+  use_cos: True
+  use_plda: False
