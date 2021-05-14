@@ -27,3 +27,9 @@ Audio-visual lip biometrics is interesting. Different from other audio-visual sp
 * collect large audio-visual lip database
 
 # Cite
+@article{liu2021exploring,
+  title={Exploring Deep Learning for Joint Audio-Visual Lip Biometrics},
+  author={Liu, Meng and Wang, Longbiao and Lee, Kong Aik and Zhang, Hanyi and Zeng, Chang and Dang, Jianwu},
+  journal={arXiv preprint arXiv:2104.08510},
+  year={2021}
+}
