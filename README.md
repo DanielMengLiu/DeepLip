@@ -1,5 +1,6 @@
 # DeepLip
 deep-learning based audio-visual lip bometrics
+ASRU paper: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9688240
 ![image](https://user-images.githubusercontent.com/45690014/162400266-9fa40604-712e-47bb-b22f-16b757e4ebcd.png)
 
 
