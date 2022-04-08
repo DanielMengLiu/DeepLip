@@ -1,6 +1,6 @@
 # DeepLip
 deep-learning based audio-visual lip bometrics
-![avlip](https://user-images.githubusercontent.com/45690014/115110548-95209b00-9fae-11eb-9fec-1c47e85afb5d.png)
+![image](https://user-images.githubusercontent.com/45690014/162400266-9fa40604-712e-47bb-b22f-16b757e4ebcd.png)
 
 
 
@@ -27,9 +27,11 @@ Audio-visual lip biometrics is interesting. Different from other audio-visual sp
 * collect large audio-visual lip database
 
 # Cite
-@article{liu2021exploring,  
-  title={Exploring Deep Learning for Joint Audio-Visual Lip Biometrics},  
-  author={Liu, Meng and Wang, Longbiao and Lee, Kong Aik and Zhang, Hanyi and Zeng, Chang and Dang, Jianwu},  
-  journal={arXiv preprint arXiv:2104.08510},  
-  year={2021}  
+@inproceedings{liu2021deeplip,
+  title={DeepLip: A Benchmark for Deep Learning-Based Audio-Visual Lip Biometrics},
+  author={Liu, Meng and Wang, Longbiao and Lee, Kong Aik and Zhang, Hanyi and Zeng, Chang and Dang, Jianwu},
+  booktitle={2021 IEEE Automatic Speech Recognition and Understanding Workshop (ASRU)},
+  pages={122--129},
+  year={2021},
+  organization={IEEE}
 }
