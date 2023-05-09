@@ -4,8 +4,9 @@ A lot of optimization is done in AVLip including (but not limitted):
 * better performed systems
 * the audio-/visual-only structures
 * parallel data processing and score decision
-* new datasets and compressed in .mp4 format
+* opensource audio-visual lip datasets and compressed in .mp4 format
 * data augmentation
+* preprocessing code of extracting lips
 
 # DeepLip
 deep-learning based audio-visual lip bometrics
